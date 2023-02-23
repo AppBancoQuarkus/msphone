@@ -1,33 +1,31 @@
 package com.nttd.billeteradig.entity;
 
-//import org.bson.codecs.pojo.annotations.BsonProperty;
+import io.quarkus.mongodb.panache.common.MongoEntity;
+import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoEntity;
 
-//import io.quarkus.mongodb.panache.common.MongoEntity;
-//import io.quarkus.mongodb.panache.reactive.ReactivePanacheMongoEntity;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-//@MongoEntity(collection="BQMUSER")
-public class PhoneEntity {//extends ReactivePanacheMongoEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@MongoEntity(collection = "DWMPHONE")
+public class PhoneEntity extends ReactivePanacheMongoEntity {
 
-   // @BsonProperty("code_customer")
-    private long idcustomer;
-   // @BsonProperty("code_card")
-    private long idcard;    
-    private String cardnumber;
-    private String state;
+    @BsonProperty("code_customer")
+    private long idPhone;
+    private String name;
+    private String lastname;
+    private String telephone;
+    private String email;
+    private Integer password;
+    private long idAccount;
 
-    public PhoneEntity() {
-    }
-
-    public PhoneEntity(long idcustomer, long idcard, String cardnumber, String password,int pin,String state) {
-        this.idcustomer = idcustomer;
-        this.idcard = idcard;
-        this.cardnumber = cardnumber;
-        this.state = state;
-    }
-
-   
 }
