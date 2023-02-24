@@ -1,6 +1,8 @@
 package com.nttd.billeteradig.service.impl;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -12,12 +14,22 @@ import com.nttd.billeteradig.service.PhoneService;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class PhoneServiceImpl implements PhoneService {
 
     @Inject
     IncrementService incrementService;
+
+    @ConfigProperty(name = "valor.activo")
+    String valorActivo;
+
+    @ConfigProperty(name = "valor.inactivo")
+    String valorInactivo;
+
+    @ConfigProperty(name = "exception.general")
+    String exceptionGeneral;
 
     // @RestClient
     // UserApi userApi;
@@ -26,14 +38,17 @@ public class PhoneServiceImpl implements PhoneService {
     String mensajeGeneral;
 
     @Override
-    public Uni<String> getAllPhone() {
-        return Uni.createFrom().item(mensajeGeneral);
+    public Uni<List<PhoneEntity>> getAllPhone() {
+        return PhoneEntity.findAll().list();
     }
 
     @Override
     public Uni<PhoneEntity> addPhone(PhoneEntity phoneEntity) {
-
-        return Uni.createFrom().item(new PhoneEntity());
+        if (phoneEntity.getPassword().length() != 6) {
+            throw new NotFoundException(exceptionGeneral);
+        }
+        phoneEntity.setState(valorActivo);
+        return phoneEntity.persist();
     }
 
     @Override
@@ -41,17 +56,33 @@ public class PhoneServiceImpl implements PhoneService {
         Uni<PhoneEntity> postuni = PhoneEntity.findById(new ObjectId(id));
         return postuni
                 .onItem().transform(post -> {
+                    if (phoneEntity.getPassword().length() != 6) {
+                        throw new NotFoundException(exceptionGeneral);
+                    }
                     post.setPassword(phoneEntity.getPassword());
                     post.setEmail(phoneEntity.getEmail());
                     post.setTelephone(phoneEntity.getTelephone());
                     return post;
+
                 });
     }
 
     @Override
-    public Uni<PhoneEntity> findPhoneByIdCustomer(long idPhone) {
-        // Uni<PhoneEntity> phone = PhoneEntity.f;
-        return null;
+    public Uni<PhoneEntity> findPhoneByTelephone(String telephone) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("state", valorActivo);
+        params.put("telephone", telephone);
+
+        return PhoneEntity.find("state=:state and telephone=:telephone", params).firstResult();
+    }
+
+    @Override
+    public Uni<PhoneEntity> delete(String id) {
+        Uni<PhoneEntity> postdelete = PhoneEntity.findById(id);
+        return postdelete.onItem().transform(delete -> {
+            delete.setState(valorInactivo);
+            return delete;
+        });
     }
 
 }

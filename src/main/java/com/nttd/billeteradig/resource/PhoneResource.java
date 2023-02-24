@@ -1,5 +1,7 @@
 package com.nttd.billeteradig.resource;
 
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.logging.Logger;
 
@@ -9,6 +11,7 @@ import com.nttd.billeteradig.service.PhoneService;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -37,17 +40,17 @@ public class PhoneResource {
 
      @GET
      @Operation(summary = "Obtener todos los registros de billetera digital", description = "Permite obtener registros de la billetera digital")
-     public Uni<String> getAllPhone() {
+     public Uni<List<PhoneEntity>> getAllPhone() {
           logger.info("Iniciando el metodo getAllPhone - Resource.");
           return phoneService.getAllPhone();
      }
 
      @GET
-     @Path("{idUsuario}")
-     @Operation(summary = "Obtener usuario por idUsuario", description = "Permite buscar al usuario por el campo idUsuario")
-     public Uni<PhoneEntity> findByidUsuario(@PathParam("idUsuario") long idUsuario) {
-          logger.info("Iniciando metodo buscar por idUsuario - Resource");
-          return phoneService.findPhoneByIdCustomer(idUsuario);
+     @Path("{telephone}")
+     @Operation(summary = "Obtener usuario por numero de telefono", description = "Permite buscar al usuario por el campo telephone")
+     public Uni<PhoneEntity> findByTelephone(@PathParam("telephone") String telephone) {
+          logger.info("Iniciando metodo buscar por telephone - Resource");
+          return phoneService.findPhoneByTelephone(telephone);
      }
 
      @POST
@@ -61,8 +64,16 @@ public class PhoneResource {
      @Path("{ id }")
      @Operation(summary = "Actualizar usuario billetera digital", description = "Permite actualizar ciertos campos del usuario -billetera digital")
      public Uni<PhoneEntity> updatePhone(@PathParam("id") String id, PhoneEntity phoneEntity) {
-          logger.info("Iniciando metodo update usuaario waller - Resource");
+          logger.info("Iniciando metodo update usuario wallet - Resource");
           return phoneService.update(id, phoneEntity);
+     }
+
+     @DELETE
+     @Path("{id}")
+     @Operation(summary = "Eliminar usuario billetera digital", description = "Permite una eliminacion logica del usuario mas no de la bd")
+     public Uni<PhoneEntity> deletePhone(@PathParam("id") String id) {
+          logger.info("Iniciando metodo delete usuario wallet - Resource");
+          return phoneService.delete(id);
      }
 
 }
