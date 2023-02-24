@@ -54,18 +54,16 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public Uni<PhoneEntity> update(String id, PhoneEntity phoneEntity) {
         Uni<PhoneEntity> postuni = PhoneEntity.findById(new ObjectId(id));
-        return postuni
-                .onItem().transform(post -> {
+        return postuni.flatMap(post -> {
                     if (phoneEntity.getPassword().length() != 6) {
                         throw new NotFoundException(exceptionGeneral);
                     }
                     post.setPassword(phoneEntity.getPassword());
                     post.setEmail(phoneEntity.getEmail());
-                    post.setTelephone(phoneEntity.getTelephone());
-                    return post;
-
+                    return post.persistOrUpdate();
                 });
     }
+
 
     @Override
     public Uni<PhoneEntity> findPhoneByTelephone(String telephone) {
@@ -79,9 +77,9 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public Uni<PhoneEntity> delete(String id) {
         Uni<PhoneEntity> postdelete = PhoneEntity.findById(id);
-        return postdelete.onItem().transform(delete -> {
-            delete.setState(valorInactivo);
-            return delete;
+        return postdelete.flatMap(delete -> {
+                delete.setState(valorInactivo);
+                return delete.persistOrUpdate();
         });
     }
 
