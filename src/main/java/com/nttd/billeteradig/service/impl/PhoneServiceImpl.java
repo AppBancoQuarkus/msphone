@@ -9,9 +9,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import com.nttd.billeteradig.api.AccountApi;
-import com.nttd.billeteradig.api.BankCardApi;
-import com.nttd.billeteradig.api.request.BankCardRequest;
-import com.nttd.billeteradig.dto.ValidationCardDto;
 import com.nttd.billeteradig.dto.ValidationDebitDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
 import com.nttd.billeteradig.service.PhoneService;
@@ -37,9 +34,7 @@ public class PhoneServiceImpl implements PhoneService {
     @ConfigProperty(name = "valor.code.exitoso")
     int code_ok;
 
-    @RestClient
-    BankCardApi bankCardApi;
-
+   
     @RestClient
     AccountApi accountApi;
 
@@ -91,27 +86,13 @@ public class PhoneServiceImpl implements PhoneService {
         });
     }
 
-    // METODO PARA BUSCAR NUMERO DE TARJETA
-    public Uni<ValidationCardDto> getValidationCard(String cardNumber) {
-        BankCardRequest bcrq = new BankCardRequest(cardNumber);
-        return bankCardApi.getAllBankCard(bcrq).onItem().transform(resp -> {
-            ValidationCardDto validation = new ValidationCardDto(false);
-            if (resp != null && resp.getCode() == code_ok) {
-                validation.setRespuesta(true);
-                validation.setIdcard(resp.getBankCardEntity().getIdBANKCARD());
-                validation.setPin(resp.getBankCardEntity().getPin());
-                validation.setDuedate(resp.getBankCardEntity().getDuedate());
-            }
-            return validation;
-        });
-    }
-
+   
     // METODO QUE VALIDA SI ES DEBITO
-    public Uni<ValidationDebitDto> validationDebit(long IdBANKCARD) {
-        return accountApi.validationDebit(IdBANKCARD).onItem().transform(resp -> {
+    public Uni<ValidationDebitDto> validationDebit(String cardnumber) {
+        return accountApi.validationDebit(cardnumber).onItem().transform(resp -> {
             ValidationDebitDto validation = new ValidationDebitDto(false);
-            if (resp != null && resp.getCode() == code_ok) {
-                validation.setRespuesta(true);
+            if (resp != null && resp.isRespuesta()) {
+                validation.setRespuesta(resp.isRespuesta());
                 validation.setIdAccountCustomer(resp.getIdAccountCustomer());
                 validation.setCurrent_amount(resp.getCurrent_amount());
                 validation.setFlag_creation(resp.getFlag_creation());

@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.logging.Logger;
 
-import com.nttd.billeteradig.dto.ValidationCardDto;
 import com.nttd.billeteradig.dto.ValidationDebitDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
 import com.nttd.billeteradig.service.PhoneService;
@@ -70,15 +69,11 @@ public class PhoneResource {
           return phoneService.delete(id);
      }
 
-     @GET
-     @Path("/test1/{id}")
-     public Uni<ValidationCardDto> getValidationCard(@PathParam("id") String cardNumber){
-          return phoneService.getValidationCard(cardNumber);
-     }
+  
 
      @GET
-     @Path("/testdebito/{id}")
-     public Uni<ValidationDebitDto> validationDebit(@PathParam("id") long idcard){
-          return phoneService.validationDebit(idcard);
+     @Path("/cardvalidation/{cardnumber}")
+     public Uni<ValidationDebitDto> validationDebit(@PathParam("cardnumber") String cardnumber){
+          return phoneService.validationDebit(cardnumber);
      }
 }

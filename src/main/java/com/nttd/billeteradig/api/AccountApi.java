@@ -7,6 +7,7 @@ import com.nttd.billeteradig.api.response.AccountResponse;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 
 @RegisterRestClient
 @Path("/account")
@@ -14,7 +15,7 @@ public interface AccountApi {
 
 
     @GET
-    @Path("/validation/{IdBANKCARD}")
-    public Uni<AccountResponse> validationDebit(long IdBANKCARD);
+    @Path("/validation/{cardnumber}")
+    public Uni<AccountResponse> validationDebit(@PathParam("cardnumber") String cardnumber);
     
 }
