@@ -12,19 +12,16 @@ import com.nttd.billeteradig.api.BankCardApi;
 import com.nttd.billeteradig.api.request.BankCardRequest;
 import com.nttd.billeteradig.dto.ValidationCardDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
-import com.nttd.billeteradig.service.IncrementService;
 import com.nttd.billeteradig.service.PhoneService;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class PhoneServiceImpl implements PhoneService {
 
-    @Inject
-    IncrementService incrementService;
+   
 
     @ConfigProperty(name = "valor.activo")
     String valorActivo;
