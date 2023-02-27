@@ -2,7 +2,10 @@ package com.nttd.billeteradig.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/phone-jzevallos
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

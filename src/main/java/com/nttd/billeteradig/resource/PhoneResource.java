@@ -5,8 +5,9 @@ import java.util.List;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.logging.Logger;
 
+import com.nttd.billeteradig.dto.ValidationCardDto;
+import com.nttd.billeteradig.dto.ValidationDebitDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
-import com.nttd.billeteradig.service.IncrementService;
 import com.nttd.billeteradig.service.PhoneService;
 
 import io.smallrye.mutiny.Uni;
@@ -24,19 +25,12 @@ public class PhoneResource {
      @Inject
      PhoneService phoneService;
 
-     @Inject
-     IncrementService incrementService;
+  
 
      @Inject
      Logger logger;
 
-     @GET
-     @Path("/redis/{key}")
-     @Operation(summary = "Agregando redis del microservicio", description = "Permite agregar redis para este microservicio")
-     public Uni<String> get(@PathParam("key") String key) {
-          logger.info("Iniciando el metodo redis get - Resource.");
-          return incrementService.get(key);
-     }
+  
 
      @GET
      @Operation(summary = "Obtener todos los registros de billetera digital", description = "Permite obtener registros de la billetera digital")
@@ -76,4 +70,15 @@ public class PhoneResource {
           return phoneService.delete(id);
      }
 
+     @GET
+     @Path("/test1/{id}")
+     public Uni<ValidationCardDto> getValidationCard(@PathParam("id") String cardNumber){
+          return phoneService.getValidationCard(cardNumber);
+     }
+
+     @GET
+     @Path("/testdebito/{id}")
+     public Uni<ValidationDebitDto> validationDebit(@PathParam("id") long idcard){
+          return phoneService.validationDebit(idcard);
+     }
 }
