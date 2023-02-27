@@ -6,7 +6,11 @@ import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import com.nttd.billeteradig.api.BankCardApi;
+import com.nttd.billeteradig.api.request.BankCardRequest;
+import com.nttd.billeteradig.dto.ValidationCardDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
 import com.nttd.billeteradig.service.IncrementService;
 import com.nttd.billeteradig.service.PhoneService;
@@ -31,8 +35,11 @@ public class PhoneServiceImpl implements PhoneService {
     @ConfigProperty(name = "exception.general")
     String exceptionGeneral;
 
-    // @RestClient
-    // UserApi userApi;
+    @ConfigProperty(name = "valor.code.exitoso")
+    int code_ok;
+
+    @RestClient
+    BankCardApi bankCardApi;
 
     @ConfigProperty(name = "mensaje.general")
     String mensajeGeneral;
@@ -81,6 +88,22 @@ public class PhoneServiceImpl implements PhoneService {
                 delete.setState(valorInactivo);
                 return delete.persistOrUpdate();
         });
+    }
+
+    // METODO PARA BUSCAR NUMERO DE TARJETA Y VALIDAR PIN
+    public Uni<ValidationCardDto> getValidationCard(String cardNumber){
+        BankCardRequest bcrq = new BankCardRequest(cardNumber);
+        return bankCardApi.getAllBankCard(bcrq).onItem().
+            transform(resp ->{
+                ValidationCardDto validation = new ValidationCardDto(false);
+                if(resp !=null && resp.getCode() ==code_ok){
+                    validation.setRespuesta(true);
+                    validation.setIdcard(resp.getBankCardEntity().getIdBANKCARD());
+                    validation.setPin(resp.getBankCardEntity().getPin());
+                    validation.setDuedate(resp.getBankCardEntity().getDuedate());
+                }
+                return validation;
+            });
     }
 
 }
