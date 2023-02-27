@@ -1,6 +1,8 @@
-package com.nttd.billeteradig.api.response;
+package com.nttd.billeteradig.api;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+
+import com.nttd.billeteradig.api.response.AccountResponse;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
@@ -10,11 +12,9 @@ import jakarta.ws.rs.Path;
 @Path("/account")
 public interface AccountApi {
 
-    @GET
-    @Path("/IdBANKCARD/{IdBANKCARD}")
-    public Uni<AccountResponse> findAccountByIdCard(long IdBANKCARD);
 
     @GET
     @Path("/validation/{IdBANKCARD}")
     public Uni<AccountResponse> validationDebit(long IdBANKCARD);
+    
 }

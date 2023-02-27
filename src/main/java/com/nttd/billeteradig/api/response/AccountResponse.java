@@ -6,9 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AccountResponse {
-    private int code;
-    private String message;
-    private String errorMessage;
-    private String description;
-    private AccountObject accountEntity;
+
+    private long IdAccountCustomer;
+    private boolean respuesta;
+    private String flag_creation;
+    private double current_amount;
+    private long IdBANKCARD;
+    private String state;
+    
 }

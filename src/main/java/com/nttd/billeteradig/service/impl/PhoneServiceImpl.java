@@ -8,9 +8,9 @@ import org.bson.types.ObjectId;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import com.nttd.billeteradig.api.AccountApi;
 import com.nttd.billeteradig.api.BankCardApi;
 import com.nttd.billeteradig.api.request.BankCardRequest;
-import com.nttd.billeteradig.api.response.AccountApi;
 import com.nttd.billeteradig.dto.ValidationCardDto;
 import com.nttd.billeteradig.dto.ValidationDebitDto;
 import com.nttd.billeteradig.entity.PhoneEntity;
@@ -112,11 +112,11 @@ public class PhoneServiceImpl implements PhoneService {
             ValidationDebitDto validation = new ValidationDebitDto(false);
             if (resp != null && resp.getCode() == code_ok) {
                 validation.setRespuesta(true);
-                validation.setIdAccountCustomer(resp.getAccountEntity().getIdAccountCustomer());
-                validation.setCurrent_amount(resp.getAccountEntity().getCurrent_amount());
-                validation.setFlag_creation(resp.getAccountEntity().getFlag_creation());
-                validation.setIdBANKCARD(resp.getAccountEntity().getIdBANKCARD());
-                validation.setState(resp.getAccountEntity().getState());
+                validation.setIdAccountCustomer(resp.getIdAccountCustomer());
+                validation.setCurrent_amount(resp.getCurrent_amount());
+                validation.setFlag_creation(resp.getFlag_creation());
+                validation.setIdBANKCARD(resp.getIdBANKCARD());
+                validation.setState(resp.getState());
             }
             return validation;
         });
